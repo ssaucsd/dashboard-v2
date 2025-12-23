@@ -107,3 +107,37 @@ VALUES (
         'Official dress code and uniform requirements for concerts and performances.',
         false
     );
+
+-- Assign tags to resources
+INSERT INTO public.resource_tags (resource_id, tag_id)
+SELECT r.id, t.id
+FROM public.resources r, public.tags t
+WHERE r.name = 'Practice Room Booking' AND t.slug = 'practice-tools'
+UNION ALL
+SELECT r.id, t.id
+FROM public.resources r, public.tags t
+WHERE r.name = 'Sheet Music Library' AND t.slug = 'sheet-music'
+UNION ALL
+SELECT r.id, t.id
+FROM public.resources r, public.tags t
+WHERE r.name = 'Metronome Tool' AND t.slug = 'practice-tools'
+UNION ALL
+SELECT r.id, t.id
+FROM public.resources r, public.tags t
+WHERE r.name = 'Music Theory Guide' AND t.slug = 'guides-resources'
+UNION ALL
+SELECT r.id, t.id
+FROM public.resources r, public.tags t
+WHERE r.name = 'Tuner App' AND t.slug = 'practice-tools'
+UNION ALL
+SELECT r.id, t.id
+FROM public.resources r, public.tags t
+WHERE r.name = 'Practice Log Template' AND t.slug = 'practice-tools'
+UNION ALL
+SELECT r.id, t.id
+FROM public.resources r, public.tags t
+WHERE r.name = 'Ensemble Repertoire Recordings' AND t.slug = 'recordings'
+UNION ALL
+SELECT r.id, t.id
+FROM public.resources r, public.tags t
+WHERE r.name = 'Performance Attire Guidelines' AND t.slug = 'guides-resources';

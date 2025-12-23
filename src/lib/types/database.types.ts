@@ -97,6 +97,39 @@ export type Database = {
         }
         Relationships: []
       }
+      resource_tags: {
+        Row: {
+          created_at: string
+          resource_id: string
+          tag_id: string
+        }
+        Insert: {
+          created_at?: string
+          resource_id: string
+          tag_id: string
+        }
+        Update: {
+          created_at?: string
+          resource_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_tags_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resources"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resource_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       resources: {
         Row: {
           created_at: string
@@ -121,6 +154,30 @@ export type Database = {
           is_pinned?: boolean
           link?: string
           name?: string
+        }
+        Relationships: []
+      }
+      tags: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          name?: string
+          slug?: string
         }
         Relationships: []
       }
