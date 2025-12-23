@@ -1,0 +1,27 @@
+"use client";
+
+import { GoogleIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
+
+async function handleLogin() {
+    const supabase = createClient();
+    supabase.auth.signInWithOAuth({
+        provider: 'google',
+    })
+}
+
+export default function Auth() {
+    return (
+        <div className="flex flex-col min-h-screen w-full p-4 gap-4 justify-center items-center">
+            <h1 className="text-4xl font-serif">Log in with your UCSD Email</h1>
+            <Button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full cursor-pointer" onClick={handleLogin}>
+                <div className="flex items-center gap-2">
+                    <HugeiconsIcon icon={GoogleIcon} />
+                    Log in with Google
+                </div>
+            </Button>
+        </div>
+    )
+}

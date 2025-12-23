@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Figtree, Calistoga } from "next/font/google";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import "./globals.css";
-import { AppSidebar } from "@/components/AppSidebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 const figtree = Figtree({ subsets: ['latin'], variable: '--font-sans' });
@@ -29,7 +27,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-
+      <head>
+        <script src="https://accounts.google.com/gsi/client" async></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
       <body
         className={`${figtree.variable} ${geistMono.variable} ${calistoga.variable} antialiased`}
       >
@@ -39,13 +40,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider>
-            <AppSidebar />
-            <main className="flex-1 w-full">
-              <SidebarTrigger />
-              {children}
-            </main>
-          </SidebarProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>
