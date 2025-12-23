@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Calendar, MapPin, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
+import { getFirstName } from "@/lib/queries";
 
 const mockEvents = [
     {
@@ -48,11 +49,13 @@ const mockResources = [
     },
 ];
 
-export default function Page() {
+export default async function Page() {
+    const firstName = await getFirstName();
+
     return (
         <div className="flex flex-col min-h-screen w-full p-4 gap-8">
             <h1 className="text-4xl font-serif">
-                Welcome to SSA, User.
+                Welcome to SSA, {firstName}.
             </h1>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 grid-rows-[auto,1fr]">
                 <Card className="col-span-1 lg:col-span-2 w-full">

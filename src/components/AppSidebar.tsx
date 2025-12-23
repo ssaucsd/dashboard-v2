@@ -8,6 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarHeader,
+  SidebarSeparator,
 } from "@/components/ui/sidebar"
 import { Home, MusicNoteSquare02Icon, Calendar, Book } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
@@ -60,6 +61,7 @@ export function AppSidebar() {
           <div className="font-bold text-lg">SSA at UCSD</div>
         </div>
       </SidebarHeader>
+      <SidebarSeparator className="w-full" />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>User Actions</SidebarGroupLabel>
