@@ -9,6 +9,9 @@ async function handleLogin() {
     const supabase = createClient();
     supabase.auth.signInWithOAuth({
         provider: 'google',
+        options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+        },
     })
 }
 
