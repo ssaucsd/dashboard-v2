@@ -1,34 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormattedDate } from "@/components/formatted-date";
-import { Calendar, MapPin, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { Calendar, MapPin, ArrowRight01Icon, Clock } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
-import { getFirstName, getEvents } from "@/lib/queries";
-
-const mockResources = [
-    {
-        id: 1,
-        title: "Resource 1",
-        href: "#",
-        time: "January 15, 2025 at 6:00 PM",
-    },
-    {
-        id: 2,
-        title: "Resource 2",
-        href: "#",
-        time: "January 22, 2025 at 7:00 PM",
-    },
-    {
-        id: 3,
-        title: "Resource 3",
-        href: "#",
-        time: "February 1, 2025 at 5:30 PM",
-    },
-];
+import { getFirstName, getUpcomingEvents, getPinnedResources } from "@/lib/queries";
 
 export default async function Page() {
     const firstName = await getFirstName();
-    const events = await getEvents();
+    const events = await getUpcomingEvents();
+    const resources = await getPinnedResources();
 
     return (
         <div className="flex flex-col min-h-screen w-full p-4 gap-8">
@@ -82,18 +62,18 @@ export default async function Page() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-col gap-4">
-                        {mockResources.map((resource) => (
+                        {resources?.map((resource) => (
                             <Card key={resource.id}>
                                 <CardHeader>
                                     <CardTitle className="text-lg font-serif hover:text-primary transition-colors transition-duration-300">
-                                        <Link href={resource.href}>
-                                            {resource.title}
+                                        <Link href={resource.link}>
+                                            {resource.name}
                                         </Link>
                                     </CardTitle>
                                     <CardDescription className="flex flex-col gap-1">
                                         <div className="flex items-center gap-1">
-                                            <HugeiconsIcon icon={Calendar} width={16} height={16} />
-                                            <div>{resource.time}</div>
+                                            <HugeiconsIcon icon={Clock} width={16} height={16} />
+                                            <FormattedDate dateString={resource.created_at} showTime={false} />
                                         </div>
                                     </CardDescription>
                                 </CardHeader>

@@ -25,3 +25,36 @@ export const getEvents = async (): Promise<Event[] | null> => {
     const { data: events } = await supabase.from('events').select('*').order('start_time', { ascending: true });
     return events;
 }
+
+export const getUpcomingEvents = async (): Promise<Event[] | null> => {
+    const supabase = await createClient();
+    const now = new Date().toISOString();
+    const { data: events } = await supabase
+        .from('events')
+        .select('*')
+        .gte('start_time', now)
+        .order('start_time', { ascending: true });
+    return events;
+}
+
+export type Resource = Tables<'resources'>;
+
+export const getResources = async (): Promise<Resource[] | null> => {
+    const supabase = await createClient();
+    const { data: resources } = await supabase
+        .from('resources')
+        .select('*')
+        .order('is_pinned', { ascending: false })
+        .order('name', { ascending: true });
+    return resources;
+}
+
+export const getPinnedResources = async (): Promise<Resource[] | null> => {
+    const supabase = await createClient();
+    const { data: resources } = await supabase
+        .from('resources')
+        .select('*')
+        .eq('is_pinned', true)
+        .order('name', { ascending: true });
+    return resources;
+}
