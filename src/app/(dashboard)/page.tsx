@@ -1,32 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FormattedDate } from "@/components/formatted-date";
 import { Calendar, MapPin, ArrowRight01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
-import { getFirstName } from "@/lib/queries";
-
-const mockEvents = [
-    {
-        id: 1,
-        title: "Event 1",
-        location: "Location 1",
-        time: "January 15, 2025 at 6:00 PM",
-        description: "Event 1 description",
-    },
-    {
-        id: 2,
-        title: "Event 2",
-        location: "Location 2",
-        time: "January 22, 2025 at 7:00 PM",
-        description: "Event 2 description",
-    },
-    {
-        id: 3,
-        title: "Event 3",
-        location: "Location 3",
-        time: "February 1, 2025 at 5:30 PM",
-        description: "Event 3 description",
-    },
-];
+import { getFirstName, getEvents } from "@/lib/queries";
 
 const mockResources = [
     {
@@ -51,6 +28,7 @@ const mockResources = [
 
 export default async function Page() {
     const firstName = await getFirstName();
+    const events = await getEvents();
 
     return (
         <div className="flex flex-col min-h-screen w-full p-4 gap-8">
@@ -69,7 +47,7 @@ export default async function Page() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="flex flex-wrap gap-3">
-                        {mockEvents.map((event) => (
+                        {events?.map((event) => (
                             <Card key={event.id} className="basis-[calc(50%-6px)]">
                                 <CardHeader>
                                     <CardTitle className="text-lg font-serif">
@@ -82,13 +60,13 @@ export default async function Page() {
                                         </div>
                                         <div className="flex items-center gap-1">
                                             <HugeiconsIcon icon={Calendar} width={16} height={16} />
-                                            <div>{event.time}</div>
+                                            <FormattedDate dateString={event.start_time} />
                                         </div>
                                     </CardDescription>
                                 </CardHeader>
-                                <CardContent>
+                                {event.description && <CardContent>
                                     <p>{event.description}</p>
-                                </CardContent>
+                                </CardContent>}
                             </Card>
                         ))}
                     </CardContent>

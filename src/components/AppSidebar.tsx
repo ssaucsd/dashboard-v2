@@ -54,14 +54,13 @@ const adminActions = [
 
 export function AppSidebar() {
   return (
-    <Sidebar>
-      <SidebarHeader>
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="px-3">
         <div className="flex items-center gap-2">
           <HugeiconsIcon icon={MusicNoteSquare02Icon} />
-          <div className="font-bold text-lg">SSA at UCSD</div>
+          <div className="font-bold text-lg group-data-[collapsible=icon]:hidden">SSA at UCSD</div>
         </div>
       </SidebarHeader>
-      <SidebarSeparator className="w-full" />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>User Actions</SidebarGroupLabel>
@@ -69,12 +68,10 @@ export function AppSidebar() {
             <SidebarMenu>
               {userActions.map((action) => (
                 <SidebarMenuItem key={action.label}>
-                  <Link href={action.href}>
-                    <SidebarMenuButton className="cursor-pointer">
-                      <HugeiconsIcon icon={action.icon} strokeWidth={2} />
-                      {action.label}
-                    </SidebarMenuButton>
-                  </Link>
+                  <SidebarMenuButton tooltip={action.label} className="cursor-pointer" render={<Link href={action.href} />}>
+                    <HugeiconsIcon icon={action.icon} strokeWidth={2} />
+                    <span>{action.label}</span>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -86,12 +83,10 @@ export function AppSidebar() {
             <SidebarMenu>
               {adminActions.map((action) => (
                 <SidebarMenuItem key={action.label}>
-                  <Link href={action.href}>
-                    <SidebarMenuButton className="cursor-pointer">
-                      <HugeiconsIcon icon={action.icon} strokeWidth={2} />
-                      {action.label}
-                    </SidebarMenuButton>
-                  </Link>
+                  <SidebarMenuButton tooltip={action.label} className="cursor-pointer" render={<Link href={action.href} />}>
+                    <HugeiconsIcon icon={action.icon} strokeWidth={2} />
+                    <span>{action.label}</span>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
