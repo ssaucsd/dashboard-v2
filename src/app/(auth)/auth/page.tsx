@@ -18,7 +18,9 @@ async function handleLogin() {
 export default function Auth() {
     return (
         <div className="flex flex-col min-h-screen w-full p-4 gap-4 justify-center items-center">
-            <h1 className="text-4xl font-serif">Log in with your UCSD Email</h1>
+            <h1 className="text-4xl font-serif">Welcome to SSA!</h1>
+            <p className="text-lg text-muted-foreground">Please log in with your UCSD email to continue.</p>
+
             <Button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full cursor-pointer" onClick={handleLogin}>
                 <div className="flex items-center gap-2">
                     <HugeiconsIcon icon={GoogleIcon} />
