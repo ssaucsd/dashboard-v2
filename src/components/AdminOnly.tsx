@@ -1,15 +1,15 @@
-import { getIsAdmin } from '@/lib/queries';
-import { redirect } from 'next/navigation';
+import { getIsAdmin } from "@/lib/queries";
+import { redirect } from "next/navigation";
 
 interface AdminOnlyProps {
-    children: React.ReactNode;
-    fallbackUrl?: string;
+  children: React.ReactNode;
+  fallbackUrl?: string;
 }
 
 /**
  * Server component that blocks non-admin users from accessing wrapped content.
  * Redirects to the fallbackUrl (defaults to home page) if user is not an admin.
- * 
+ *
  * Usage:
  * ```tsx
  * export default async function AdminPage() {
@@ -22,14 +22,14 @@ interface AdminOnlyProps {
  * ```
  */
 export default async function AdminOnly({
-    children,
-    fallbackUrl = '/'
+  children,
+  fallbackUrl = "/",
 }: AdminOnlyProps) {
-    const isAdmin = await getIsAdmin();
+  const isAdmin = await getIsAdmin();
 
-    if (!isAdmin) {
-        redirect(fallbackUrl);
-    }
+  if (!isAdmin) {
+    redirect(fallbackUrl);
+  }
 
-    return <>{children}</>;
+  return <>{children}</>;
 }

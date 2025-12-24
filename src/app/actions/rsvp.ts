@@ -3,7 +3,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
-export async function rsvpToEvent(eventId: string, status: "going" | "maybe" | "not_going" = "going") {
+export async function rsvpToEvent(
+  eventId: string,
+  status: "going" | "maybe" | "not_going" = "going",
+) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -21,7 +24,7 @@ export async function rsvpToEvent(eventId: string, status: "going" | "maybe" | "
     },
     {
       onConflict: "user_id, event_id",
-    }
+    },
   );
 
   if (error) {
@@ -30,7 +33,7 @@ export async function rsvpToEvent(eventId: string, status: "going" | "maybe" | "
   }
 
   revalidatePath("/events");
-  revalidatePath(`/events/${eventId}`); 
+  revalidatePath(`/events/${eventId}`);
   return { success: true };
 }
 
@@ -56,7 +59,7 @@ export async function removeRsvp(eventId: string) {
   }
 
   revalidatePath("/events");
-    revalidatePath(`/events/${eventId}`);
+  revalidatePath(`/events/${eventId}`);
   return { success: true };
 }
 
@@ -77,9 +80,10 @@ export async function getUserRsvp(eventId: string) {
     .eq("event_id", eventId)
     .single();
 
-  if (error && error.code !== "PGRST116") { // PGRST116 is "The result contains 0 rows"
-      console.error("Error fetching RSVP:", error);
-      return null;
+  if (error && error.code !== "PGRST116") {
+    // PGRST116 is "The result contains 0 rows"
+    console.error("Error fetching RSVP:", error);
+    return null;
   }
 
   return data?.status || null;

@@ -9,12 +9,20 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
-} from "@/components/ui/sidebar"
-import { ThemeToggle } from "@/components/ThemeToggle"
-import { Home, MusicNoteSquare02Icon, Calendar, Book, Settings01Icon, Logout01Icon, User } from "@hugeicons/core-free-icons"
-import { HugeiconsIcon } from "@hugeicons/react"
-import Link from "next/link"
-import { getIsAdmin, getUserProfile } from "@/lib/queries"
+} from "@/components/ui/sidebar";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import {
+  Home,
+  MusicNoteSquare02Icon,
+  Calendar,
+  Book,
+  Settings01Icon,
+  Logout01Icon,
+  User,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import Link from "next/link";
+import { getIsAdmin, getUserProfile } from "@/lib/queries";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,44 +31,44 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const userActions = [
   {
     label: "Home",
     icon: Home,
-    href: "/"
+    href: "/",
   },
   {
     label: "Events",
     icon: Calendar,
-    href: "/events"
+    href: "/events",
   },
   {
     label: "Resources",
     icon: Book,
-    href: "/resources"
-  }
-]
+    href: "/resources",
+  },
+];
 
 const adminActions = [
   {
     label: "Edit Users",
     icon: User,
-    href: "/admin/users"
+    href: "/admin/users",
   },
   {
     label: "Edit Events",
     icon: Calendar,
-    href: "/admin/events"
+    href: "/admin/events",
   },
   {
     label: "Edit Resources",
     icon: Book,
-    href: "/admin/resources"
-  }
-]
+    href: "/admin/resources",
+  },
+];
 
 export async function AppSidebar() {
   const isAdmin = await getIsAdmin();
@@ -71,7 +79,9 @@ export async function AppSidebar() {
       <SidebarHeader className="px-3">
         <div className="flex items-center gap-2">
           <HugeiconsIcon icon={MusicNoteSquare02Icon} />
-          <div className="font-bold text-lg group-data-[collapsible=icon]:hidden">SSA at UCSD</div>
+          <div className="font-bold text-lg group-data-[collapsible=icon]:hidden">
+            SSA at UCSD
+          </div>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -81,7 +91,10 @@ export async function AppSidebar() {
               {userActions.map((action) => (
                 <SidebarMenuItem key={action.label}>
                   <Link href={action.href} className="w-full">
-                    <SidebarMenuButton tooltip={action.label} className="cursor-pointer w-full">
+                    <SidebarMenuButton
+                      tooltip={action.label}
+                      className="cursor-pointer w-full"
+                    >
                       <HugeiconsIcon icon={action.icon} strokeWidth={2} />
                       <span>{action.label}</span>
                     </SidebarMenuButton>
@@ -99,7 +112,10 @@ export async function AppSidebar() {
                 {adminActions.map((action) => (
                   <SidebarMenuItem key={action.label}>
                     <Link href={action.href} className="w-full">
-                      <SidebarMenuButton tooltip={action.label} className="cursor-pointer w-full">
+                      <SidebarMenuButton
+                        tooltip={action.label}
+                        className="cursor-pointer w-full"
+                      >
                         <HugeiconsIcon icon={action.icon} strokeWidth={2} />
                         <span>{action.label}</span>
                       </SidebarMenuButton>
@@ -108,8 +124,8 @@ export async function AppSidebar() {
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
-          </SidebarGroup>)}
-
+          </SidebarGroup>
+        )}
       </SidebarContent>
       <SidebarFooter className="p-2 gap-2">
         <div className="flex w-full items-center gap-2">
@@ -122,7 +138,9 @@ export async function AppSidebar() {
               >
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarFallback className="rounded-lg">
-                    {user?.preferred_name?.charAt(0) || user?.first_name?.charAt(0) || "U"}
+                    {user?.preferred_name?.charAt(0) ||
+                      user?.first_name?.charAt(0) ||
+                      "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -144,7 +162,9 @@ export async function AppSidebar() {
                   <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarFallback className="rounded-lg">
-                        {user?.preferred_name?.charAt(0) || user?.first_name?.charAt(0) || "U"}
+                        {user?.preferred_name?.charAt(0) ||
+                          user?.first_name?.charAt(0) ||
+                          "U"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
@@ -158,20 +178,27 @@ export async function AppSidebar() {
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link href="/settings" className="cursor-pointer flex items-center gap-2 w-full">
+                <Link
+                  href="/settings"
+                  className="cursor-pointer flex items-center gap-2 w-full"
+                >
                   <HugeiconsIcon icon={Settings01Icon} className="size-4" />
                   Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <form action={async () => {
-                  'use server';
-                  const { createClient } = await import("@/lib/supabase/server");
-                  const supabase = await createClient();
-                  await supabase.auth.signOut();
-                  const { redirect } = await import("next/navigation");
-                  redirect('/login');
-                }} className="w-full">
+                <form
+                  action={async () => {
+                    "use server";
+                    const { createClient } =
+                      await import("@/lib/supabase/server");
+                    const supabase = await createClient();
+                    await supabase.auth.signOut();
+                    const { redirect } = await import("next/navigation");
+                    redirect("/login");
+                  }}
+                  className="w-full"
+                >
                   <button className="flex w-full items-center gap-2 cursor-pointer text-destructive focus:text-destructive">
                     <HugeiconsIcon icon={Logout01Icon} className="size-4" />
                     Log out
@@ -184,5 +211,5 @@ export async function AppSidebar() {
         </div>
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

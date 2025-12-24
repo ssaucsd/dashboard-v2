@@ -7,8 +7,7 @@ import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { Toaster } from "@/components/ui/sonner";
 
-
-const figtree = Figtree({ subsets: ['latin'], variable: '--font-sans' });
+const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -18,7 +17,7 @@ const geistMono = Geist_Mono({
 const calistoga = Calistoga({
   variable: "--font-calistoga",
   subsets: ["latin"],
-  weight: "400"
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -39,9 +38,7 @@ export default function RootLayout({
       <body
         className={`${figtree.variable} ${geistMono.variable} ${calistoga.variable} antialiased`}
       >
-        <NextSSRPlugin
-          routerConfig={extractRouterConfig(ourFileRouter)}
-        />
+        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

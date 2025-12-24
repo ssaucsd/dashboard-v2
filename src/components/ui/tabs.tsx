@@ -1,61 +1,60 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Tabs as TabsPrimitive } from "@base-ui/react/tabs"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
+import { cn } from "@/lib/utils";
 
-const Tabs = TabsPrimitive.Root
+const Tabs = TabsPrimitive.Root;
 
-function TabsList({
-  className,
-  ...props
-}: TabsPrimitive.List.Props) {
-  const listRef = React.useRef<HTMLDivElement>(null)
+function TabsList({ className, ...props }: TabsPrimitive.List.Props) {
+  const listRef = React.useRef<HTMLDivElement>(null);
   const [indicatorStyle, setIndicatorStyle] = React.useState<{
-    left: number
-    width: number
-  } | null>(null)
+    left: number;
+    width: number;
+  } | null>(null);
 
   React.useEffect(() => {
     const updateIndicator = () => {
-      if (!listRef.current) return
+      if (!listRef.current) return;
 
-      const activeTab = listRef.current.querySelector('[data-active]') as HTMLElement
+      const activeTab = listRef.current.querySelector(
+        "[data-active]",
+      ) as HTMLElement;
       if (!activeTab) {
-        setIndicatorStyle(null)
-        return
+        setIndicatorStyle(null);
+        return;
       }
 
-      const listRect = listRef.current.getBoundingClientRect()
-      const tabRect = activeTab.getBoundingClientRect()
+      const listRect = listRef.current.getBoundingClientRect();
+      const tabRect = activeTab.getBoundingClientRect();
 
       setIndicatorStyle({
         left: tabRect.left - listRect.left,
         width: tabRect.width,
-      })
-    }
+      });
+    };
 
     // Initial update
-    updateIndicator()
+    updateIndicator();
 
     // Use MutationObserver to watch for active state changes
-    const observer = new MutationObserver(updateIndicator)
+    const observer = new MutationObserver(updateIndicator);
     if (listRef.current) {
       observer.observe(listRef.current, {
         attributes: true,
-        attributeFilter: ['data-active'],
+        attributeFilter: ["data-active"],
         subtree: true,
-      })
+      });
     }
 
     // Update on resize
-    window.addEventListener('resize', updateIndicator)
+    window.addEventListener("resize", updateIndicator);
 
     return () => {
-      observer.disconnect()
-      window.removeEventListener('resize', updateIndicator)
-    }
-  }, [])
+      observer.disconnect();
+      window.removeEventListener("resize", updateIndicator);
+    };
+  }, []);
 
   return (
     <TabsPrimitive.List
@@ -63,7 +62,7 @@ function TabsList({
       data-slot="tabs-list"
       className={cn(
         "relative inline-flex h-10 items-center justify-start gap-1 rounded-4xl bg-muted p-1 text-muted-foreground overflow-x-auto w-full",
-        className
+        className,
       )}
       {...props}
     >
@@ -78,23 +77,20 @@ function TabsList({
       )}
       {props.children}
     </TabsPrimitive.List>
-  )
+  );
 }
 
-function TabsTrigger({
-  className,
-  ...props
-}: TabsPrimitive.Tab.Props) {
+function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
   return (
     <TabsPrimitive.Tab
       data-slot="tabs-trigger"
       className={cn(
         "relative inline-flex items-center justify-center whitespace-nowrap rounded-3xl px-3 py-1.5 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[active]:text-foreground z-10",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Tabs, TabsList, TabsTrigger }
+export { Tabs, TabsList, TabsTrigger };

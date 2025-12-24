@@ -21,25 +21,27 @@ export const ourFileRouter = {
     {
       // Don't wait for server callback - fixes dev mode issue where callback doesn't reach localhost
       awaitServerData: false,
-    }
+    },
   )
     // Set permissions and file types for this FileRoute
     .middleware(async () => {
       // This code runs on your server before upload
       const supabase = await createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       // If you throw, the user will not be able to upload
       if (!user) throw new UploadThingError("Unauthorized");
 
       // Check if user is admin
       const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
         .single();
 
-      if (profile?.role !== 'admin') {
+      if (profile?.role !== "admin") {
         throw new UploadThingError("Only admins can upload files");
       }
 

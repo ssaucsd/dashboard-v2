@@ -2,41 +2,41 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    images: {
-        remotePatterns: [
-            {
-                protocol: "https",
-                hostname: "5wetyecq6s.ufs.sh",
-            },
-            {
-                protocol: "https",
-                hostname: "placehold.co",
-            },
-            {
-                protocol: "https",
-                hostname: "images.unsplash.com",
-            },
-            {
-                protocol: "https",
-                hostname: "utfs.io",
-            },
-        ],
-    },
-    // PostHog reverse proxy configuration
-    async rewrites() {
-        return [
-            {
-                source: "/ingest/static/:path*",
-                destination: "https://us-assets.i.posthog.com/static/:path*",
-            },
-            {
-                source: "/ingest/:path*",
-                destination: "https://us.i.posthog.com/:path*",
-            },
-        ];
-    },
-    // This is required to support PostHog trailing slash API requests
-    skipTrailingSlashRedirect: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "5wetyecq6s.ufs.sh",
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+      },
+    ],
+  },
+  // PostHog reverse proxy configuration
+  async rewrites() {
+    return [
+      {
+        source: "/ingest/static/:path*",
+        destination: "https://us-assets.i.posthog.com/static/:path*",
+      },
+      {
+        source: "/ingest/:path*",
+        destination: "https://us.i.posthog.com/:path*",
+      },
+    ];
+  },
+  // This is required to support PostHog trailing slash API requests
+  skipTrailingSlashRedirect: true,
 };
 
 export default withSentryConfig(nextConfig, {

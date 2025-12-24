@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "format:fix": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
     "db:start": "bunx --bun supabase start",
     "db:stop": "bunx --bun supabase stop",
     "db:diff": "bunx --bun supabase db diff -f",
@@ -48,6 +51,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
+    "prettier": "^3.7.4",
     "supabase": "^2.67.3",
     "tailwindcss": "^4",
     "typescript": "^5"

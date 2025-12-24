@@ -24,10 +24,15 @@ export type ActionState = {
   };
 };
 
-export async function completeOnboarding(prevState: ActionState, formData: FormData): Promise<ActionState> {
+export async function completeOnboarding(
+  prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const supabase = await createClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return { error: "Not authenticated" };

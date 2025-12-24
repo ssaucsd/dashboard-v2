@@ -9,12 +9,14 @@ SSAUCSD Dashboard V2 - A Next.js dashboard application for managing SSA UCSD mem
 ## Development Commands
 
 ### Running the Application
+
 - `bun dev` - Start Next.js development server
 - `bun run build` - Build production bundle
 - `bun start` - Start production server
 - `bun run lint` - Run ESLint
 
 ### Database (Supabase Local Development)
+
 - `bun run db:start` - Start local Supabase instance (runs on port 54321)
 - `bun run db:stop` - Stop local Supabase instance
 - `bun run db:reset` - Reset database to initial state (runs migrations and seeds)
@@ -77,6 +79,7 @@ Five core tables with relationships:
 ### Data Fetching Pattern
 
 All queries in `src/lib/queries.ts` are Server Actions (marked `'use server'`):
+
 - `getFirstName()` - Get authenticated user's first name
 - `getEvents()` / `getUpcomingEvents()` - Event listings
 - `getResources()` / `getPinnedResources()` - Resource listings
@@ -118,6 +121,7 @@ The app uses Next.js route groups for different layout contexts:
 ### Fonts
 
 Three custom fonts configured in root layout:
+
 - Figtree (sans-serif, primary font)
 - Geist Mono (monospace)
 - Calistoga (serif, display font)
@@ -127,6 +131,7 @@ Access via CSS variables: `--font-sans`, `--font-geist-mono`, `--font-calistoga`
 ### Environment Variables
 
 Required environment variables (see `.env.example`):
+
 - `NEXT_PUBLIC_SUPABASE_URL` - Supabase project URL (local: http://127.0.0.1:54321)
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` - Supabase anonymous key
 - `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_SECRET` - Google OAuth secret (for auth)
@@ -140,12 +145,14 @@ TypeScript configured with `@/*` alias mapping to `src/*` - use this for all imp
 ### Database Migrations
 
 Migrations are timestamped SQL files in `supabase/migrations/`:
+
 - Use `bun run db:migrate` to create a new migration
 - Use `bun run db:diff -f <migration_name>` to auto-generate from schema changes
 - Migrations run automatically on `db:reset`
 - Seeding data in `supabase/seed.sql` runs after migrations
 
 Key migration patterns:
+
 - RLS policies defined in dedicated migration files
 - Triggers for auto-profile creation on signup (`handle_new_user()`)
 - Admin role enforcement via PostgreSQL functions
