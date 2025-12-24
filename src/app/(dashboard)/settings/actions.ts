@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export type ActionState = {
     error?: string;
@@ -47,6 +48,31 @@ export async function updateProfile(prevState: ActionState, formData: FormData):
         console.error("Profile update error:", error);
         return { error: 'Failed to update profile. Please try again.' };
     }
+
+    // Track profile updated event
+    const posthog = getPostHogClient();
+
+    // Update user identity with new profile information
+    posthog.identify({
+        distinctId: user.id,
+        properties: {
+            email: user.email,
+            preferred_name,
+            major,
+            graduation_year: parseInt(graduation_year),
+        },
+    });
+
+    posthog.capture({
+        distinctId: user.id,
+        event: "profile_updated",
+        properties: {
+            major,
+            graduation_year: parseInt(graduation_year),
+        },
+    });
+
+    await posthog.shutdown();
 
     revalidatePath('/', 'layout'); // Revalidate everything to update sidebar
     return { success: 'Profile updated successfully!' };

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 const onboardingSchema = z.object({
   preferred_name: z.string().min(1, "Preferred name is required"),
@@ -59,6 +60,33 @@ export async function completeOnboarding(prevState: ActionState, formData: FormD
   if (error) {
     return { error: "Failed to update profile: " + error.message };
   }
+
+  // Track onboarding completed event
+  const posthog = getPostHogClient();
+
+  // Update user identity with profile information
+  posthog.identify({
+    distinctId: user.id,
+    properties: {
+      email: user.email,
+      preferred_name: validatedFields.data.preferred_name,
+      instrument: validatedFields.data.instrument,
+      major: validatedFields.data.major,
+      graduation_year: validatedFields.data.graduation_year,
+    },
+  });
+
+  posthog.capture({
+    distinctId: user.id,
+    event: "onboarding_completed",
+    properties: {
+      instrument: validatedFields.data.instrument,
+      major: validatedFields.data.major,
+      graduation_year: validatedFields.data.graduation_year,
+    },
+  });
+
+  await posthog.shutdown();
 
   revalidatePath("/", "layout");
   redirect("/");

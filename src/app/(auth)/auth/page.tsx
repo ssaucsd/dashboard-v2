@@ -4,8 +4,14 @@ import { GoogleIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
+import posthog from "posthog-js";
 
 async function handleLogin() {
+    // Track login started event
+    posthog.capture("login_started", {
+        provider: "google",
+    });
+
     const supabase = createClient();
     supabase.auth.signInWithOAuth({
         provider: 'google',

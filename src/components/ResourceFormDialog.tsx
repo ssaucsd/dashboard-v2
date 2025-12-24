@@ -18,6 +18,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, Edit02Icon } from "@hugeicons/core-free-icons";
 import { type ResourceWithTags, type Tag } from "@/lib/queries";
 import { createResource, updateResource, type ActionResult } from "@/app/(dashboard)/admin/resources/actions";
+import posthog from "posthog-js";
 
 interface ResourceFormDialogProps {
     resource?: ResourceWithTags;
@@ -49,9 +50,30 @@ export function ResourceFormDialog({ resource, trigger, availableTags = [] }: Re
             }
 
             if (result.success) {
+                // Track admin resource created/updated
+                const resourceName = formData.get('name') as string;
+                const resourceLink = formData.get('link') as string;
+                const isPinned = formData.get('is_pinned') === 'on';
+
+                if (isEditing) {
+                    posthog.capture("admin_resource_updated", {
+                        resource_id: resource.id,
+                        resource_name: resourceName,
+                        resource_link: resourceLink,
+                        resource_is_pinned: isPinned,
+                    });
+                } else {
+                    posthog.capture("admin_resource_created", {
+                        resource_name: resourceName,
+                        resource_link: resourceLink,
+                        resource_is_pinned: isPinned,
+                    });
+                }
+
                 setOpen(false);
             } else {
                 setError(result.error || 'An error occurred');
+                posthog.captureException(new Error(result.error || 'Resource form error'));
             }
         });
     };
