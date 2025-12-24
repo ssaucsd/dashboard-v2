@@ -45,7 +45,7 @@ A member and admin dashboard for SSA at UCSD built with Next.js 16, Supabase, an
 | `bun run format:fix`        | Format code with Prettier               |
 | `bun run typecheck`         | Run TypeScript type checking            |
 | `bun run db:reset`          | Reset database (runs migrations + seed) |
-| `bun run db:migrate`        | Create new migration file               |
+| `bun run db:migrate <name>` | Create new migration file               |
 | `bun run db:diff -f <name>` | Generate migration from schema changes  |
 | `bun run db:push`           | Push migrations to remote database      |
 
