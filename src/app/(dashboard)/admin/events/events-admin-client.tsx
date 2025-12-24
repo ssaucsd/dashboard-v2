@@ -5,35 +5,11 @@ import { type Event } from "@/lib/queries";
 import { EventFormDialog, EditEventButton } from "@/components/EventFormDialog";
 import { DeleteEventDialog } from "@/components/DeleteEventDialog";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Calendar03Icon, Location01Icon, Clock01Icon } from "@hugeicons/core-free-icons";
+import { Calendar, MapPin, Clock } from "@hugeicons/core-free-icons";
+import Image from "next/image";
 
 interface EventsAdminClientProps {
     events: Event[];
-}
-
-function formatEventDate(startTime: string, endTime: string) {
-    const start = new Date(startTime);
-    const end = new Date(endTime);
-
-    const dateOptions: Intl.DateTimeFormatOptions = {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-    };
-
-    const timeOptions: Intl.DateTimeFormatOptions = {
-        hour: 'numeric',
-        minute: '2-digit',
-    };
-
-    const dateStr = start.toLocaleDateString('en-US', dateOptions);
-    const startTimeStr = start.toLocaleTimeString('en-US', timeOptions);
-    const endTimeStr = end.toLocaleTimeString('en-US', timeOptions);
-
-    return {
-        date: dateStr,
-        time: `${startTimeStr} - ${endTimeStr}`,
-    };
 }
 
 export function EventsAdminClient({ events }: EventsAdminClientProps) {
@@ -54,7 +30,7 @@ export function EventsAdminClient({ events }: EventsAdminClientProps) {
                 <Card className="p-12 text-center">
                     <div className="flex flex-col items-center gap-4">
                         <div className="rounded-full bg-muted p-4">
-                            <HugeiconsIcon icon={Calendar03Icon} className="h-8 w-8 text-muted-foreground" />
+                            <HugeiconsIcon icon={Calendar} className="h-8 w-8 text-muted-foreground" />
                         </div>
                         <div className="space-y-2">
                             <h3 className="text-xl font-semibold">No events yet</h3>
@@ -66,58 +42,92 @@ export function EventsAdminClient({ events }: EventsAdminClientProps) {
                     </div>
                 </Card>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {events.map((event) => {
-                        const { date, time } = formatEventDate(event.start_time, event.end_time);
+                        const startDate = new Date(event.start_time);
+                        const endDate = new Date(event.end_time);
+
                         return (
-                            <Card key={event.id} className="p-0 overflow-hidden">
+                            <Card
+                                key={event.id}
+                                className="group overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 p-0"
+                            >
                                 {/* Event Image */}
-                                {event.image_url && (
-                                    <div className="aspect-video w-full overflow-hidden">
-                                        <img
+                                <div className="relative aspect-3/4 overflow-hidden bg-linear-to-br from-primary/20 to-primary/5">
+                                    {event.image_url ? (
+                                        <Image
                                             src={event.image_url}
                                             alt={event.title}
-                                            className="w-full h-full object-cover"
+                                            fill
+                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
                                         />
-                                    </div>
-                                )}
-                                <CardContent className="p-4">
-                                    <div className="space-y-3">
-                                        {/* Title and Actions */}
-                                        <div className="flex items-start justify-between gap-2">
-                                            <h3 className="font-semibold text-lg line-clamp-1">
-                                                {event.title}
-                                            </h3>
-                                            <div className="flex items-center gap-1 shrink-0">
-                                                <EditEventButton event={event} />
-                                                <DeleteEventDialog
-                                                    eventId={event.id}
-                                                    eventTitle={event.title}
-                                                />
+                                    ) : (
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="text-center p-4">
+                                                <div className="text-5xl font-bold text-primary/30">
+                                                    {startDate.getDate()}
+                                                </div>
+                                                <div className="text-lg uppercase tracking-wider text-primary/50">
+                                                    {startDate.toLocaleString('default', { month: 'short' })}
+                                                </div>
                                             </div>
                                         </div>
+                                    )}
 
-                                        {/* Description */}
+                                    {/* Date Badge */}
+                                    <div className="absolute top-3 left-3 bg-background/95 backdrop-blur-sm rounded-lg p-2 shadow-md">
+                                        <div className="text-center">
+                                            <div className="text-xs uppercase tracking-wider text-muted-foreground font-medium">
+                                                {startDate.toLocaleString('default', { month: 'short' })}
+                                            </div>
+                                            <div className="text-2xl font-bold text-foreground leading-none">
+                                                {startDate.getDate()}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Admin Actions */}
+                                    <div className="absolute top-3 right-3 flex items-center gap-1 bg-background/95 backdrop-blur-sm rounded-lg p-1 shadow-md">
+                                        <EditEventButton event={event} />
+                                        <DeleteEventDialog
+                                            eventId={event.id}
+                                            eventTitle={event.title}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Event Details */}
+                                <CardContent className="p-4 space-y-3">
+                                    <div className="space-y-2">
+                                        <h3 className="text-lg font-serif leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                                            {event.title}
+                                        </h3>
+
                                         {event.description && (
-                                            <p className="text-sm text-muted-foreground line-clamp-2">
+                                            <p className="text-muted-foreground text-sm line-clamp-2">
                                                 {event.description}
                                             </p>
                                         )}
+                                    </div>
 
-                                        {/* Event Details */}
-                                        <div className="space-y-2 text-sm text-muted-foreground">
-                                            <div className="flex items-center gap-2">
-                                                <HugeiconsIcon icon={Calendar03Icon} className="h-4 w-4 shrink-0" />
-                                                <span>{date}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <HugeiconsIcon icon={Clock01Icon} className="h-4 w-4 shrink-0" />
-                                                <span>{time}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <HugeiconsIcon icon={Location01Icon} className="h-4 w-4 shrink-0" />
-                                                <span className="line-clamp-1">{event.location}</span>
-                                            </div>
+                                    <div className="space-y-2 pt-2 border-t border-border/50">
+                                        {/* Time */}
+                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                            <HugeiconsIcon icon={Clock} className="h-4 w-4 shrink-0" />
+                                            <span>
+                                                {(() => {
+                                                    const dateStr = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                                                    const startTimeStr = startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }).replace(' ', '');
+                                                    const endTimeStr = endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                                                    return `${dateStr}, ${startTimeStr} - ${endTimeStr}`;
+                                                })()}
+                                            </span>
+                                        </div>
+
+                                        {/* Location */}
+                                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                            <HugeiconsIcon icon={MapPin} className="h-4 w-4 shrink-0" />
+                                            <span className="line-clamp-1">{event.location}</span>
                                         </div>
                                     </div>
                                 </CardContent>

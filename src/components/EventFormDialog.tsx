@@ -18,7 +18,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, Edit02Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { type Event } from "@/lib/queries";
 import { createEvent, updateEvent, type ActionResult } from "@/app/(dashboard)/admin/events/actions";
-import { UploadDropzone } from "@/utils/uploadthing";
+import { UploadButton } from "@/utils/uploadthing";
 
 interface EventFormDialogProps {
     event?: Event;
@@ -31,6 +31,14 @@ export function EventFormDialog({ event, trigger }: EventFormDialogProps) {
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
     const [imageUrl, setImageUrl] = useState<string>(event?.image_url || "");
+    const [isUploading, setIsUploading] = useState(false);
+
+    // Convert datetime-local value to ISO string with timezone
+    const convertToISO = (datetimeLocal: string): string => {
+        if (!datetimeLocal) return "";
+        const date = new Date(datetimeLocal);
+        return date.toISOString();
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -38,6 +46,11 @@ export function EventFormDialog({ event, trigger }: EventFormDialogProps) {
 
         const formData = new FormData(e.currentTarget);
         formData.set('image_url', imageUrl);
+
+        const startTime = formData.get('start_time') as string;
+        const endTime = formData.get('end_time') as string;
+        if (startTime) formData.set('start_time', convertToISO(startTime));
+        if (endTime) formData.set('end_time', convertToISO(endTime));
 
         startTransition(async () => {
             let result: ActionResult;
@@ -58,7 +71,6 @@ export function EventFormDialog({ event, trigger }: EventFormDialogProps) {
         });
     };
 
-    // Format datetime for input field (convert ISO to datetime-local format)
     const formatDateTimeLocal = (isoString: string | undefined) => {
         if (!isoString) return "";
         const date = new Date(isoString);
@@ -174,17 +186,38 @@ export function EventFormDialog({ event, trigger }: EventFormDialogProps) {
                                 </Button>
                             </div>
                         ) : (
-                            <UploadDropzone
-                                endpoint="imageUploader"
-                                onClientUploadComplete={(res) => {
-                                    if (res?.[0]?.ufsUrl) {
-                                        setImageUrl(res[0].ufsUrl);
-                                    }
-                                }}
-                                onUploadError={(error: Error) => {
-                                    setError(`Upload failed: ${error.message}`);
-                                }}
-                            />
+                            <div className="flex flex-col items-center gap-4 p-6 border-2 border-dashed rounded-lg">
+                                {isUploading ? (
+                                    <p className="text-sm text-muted-foreground">Uploading...</p>
+                                ) : (
+                                    <>
+                                        <p className="text-sm text-muted-foreground">
+                                            Click below to upload an image
+                                        </p>
+                                        <UploadButton
+                                            endpoint="imageUploader"
+                                            onUploadBegin={() => {
+                                                console.log("Upload begin");
+                                                setIsUploading(true);
+                                            }}
+                                            onClientUploadComplete={(res) => {
+                                                console.log("Upload complete:", res);
+                                                setIsUploading(false);
+                                                if (res?.[0]?.url) {
+                                                    setImageUrl(res[0].url);
+                                                } else if (res?.[0]?.key) {
+                                                    setImageUrl(`https://utfs.io/f/${res[0].key}`);
+                                                }
+                                            }}
+                                            onUploadError={(error: Error) => {
+                                                console.error("Upload error:", error);
+                                                setIsUploading(false);
+                                                setError(`Upload failed: ${error.message}`);
+                                            }}
+                                        />
+                                    </>
+                                )}
+                            </div>
                         )}
                         <FieldDescription>Upload an image for the event</FieldDescription>
                     </Field>
