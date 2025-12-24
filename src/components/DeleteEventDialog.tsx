@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Delete02Icon, Alert02Icon } from "@hugeicons/core-free-icons";
 import { deleteEvent } from "@/app/(dashboard)/admin/events/actions";
-import posthog from "posthog-js";
 
 interface DeleteEventDialogProps {
     eventId: string;
@@ -35,11 +34,6 @@ export function DeleteEventDialog({ eventId, eventTitle }: DeleteEventDialogProp
             const result = await deleteEvent(eventId);
             if (result.success) {
                 setOpen(false);
-                // Capture admin event deleted
-                posthog.capture('admin_event_deleted', {
-                    event_id: eventId,
-                    event_title: eventTitle,
-                });
             } else {
                 setError(result.error || 'Failed to delete event');
             }

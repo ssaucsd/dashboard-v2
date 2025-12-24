@@ -2,39 +2,26 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: "/ph/static/:path*",
-        destination: "https://us-assets.i.posthog.com/static/:path*",
-      },
-      {
-        source: "/ph/:path*",
-        destination: "https://us.i.posthog.com/:path*",
-      },
-    ];
-  },
-  skipTrailingSlashRedirect: true,
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "5wetyecq6s.ufs.sh",
-      },
-      {
-        protocol: "https",
-        hostname: "placehold.co",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "utfs.io",
-      },
-    ],
-  },
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "5wetyecq6s.ufs.sh",
+            },
+            {
+                protocol: "https",
+                hostname: "placehold.co",
+            },
+            {
+                protocol: "https",
+                hostname: "images.unsplash.com",
+            },
+            {
+                protocol: "https",
+                hostname: "utfs.io",
+            },
+        ],
+    },
 };
 
 export default withSentryConfig(nextConfig, {

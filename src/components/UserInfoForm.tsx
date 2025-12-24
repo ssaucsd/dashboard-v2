@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useRef } from "react";
+import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -8,7 +8,6 @@ import {
     FieldLabel,
     FieldError,
 } from "@/components/ui/field";
-import posthog from "posthog-js";
 
 import { completeOnboarding, type ActionState } from "@/app/onboarding/actions";
 
@@ -16,22 +15,9 @@ const initialState: ActionState = {};
 
 export function UserInfoForm() {
     const [state, action, isPending] = useActionState(completeOnboarding, initialState);
-    const formRef = useRef<HTMLFormElement>(null);
-
-    const handleSubmit = (formData: FormData) => {
-        // Capture onboarding completion event
-        posthog.capture('onboarding_completed', {
-            instrument: formData.get('instrument'),
-            major: formData.get('major'),
-            graduation_year: formData.get('graduation_year'),
-        });
-
-        // Call the server action
-        action(formData);
-    };
 
     return (
-        <form ref={formRef} action={handleSubmit} className="space-y-6 bg-card p-6 rounded-xl border shadow-sm">
+        <form action={action} className="space-y-6 bg-card p-6 rounded-xl border shadow-sm">
             <div className="space-y-2 text-center">
                 <h2 className="text-2xl font-bold font-calistoga">Welcome to SSA!</h2>
                 <p className="text-muted-foreground">

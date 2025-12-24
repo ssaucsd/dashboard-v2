@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResourceGrid } from "@/components/ResourceGrid";
 import { type Tag, type ResourceWithTags } from "@/lib/queries";
-import posthog from "posthog-js";
 
 export function ResourcesClient({
     tags,
@@ -23,26 +22,11 @@ export function ResourcesClient({
         );
     }, [resources, selectedTagId]);
 
-    const handleTagChange = (value: string) => {
-        const newTagId = value === "all" ? null : value;
-        setSelectedTagId(newTagId);
-
-        // Capture resources filtered event
-        const selectedTag = newTagId ? tags.find(t => t.id === newTagId) : null;
-        posthog.capture('resources_filtered', {
-            tag_id: newTagId,
-            tag_name: selectedTag?.name || 'all',
-            results_count: newTagId
-                ? resources.filter(r => r.tags.some(t => t.id === newTagId)).length
-                : resources.length,
-        });
-    };
-
     return (
         <div className="space-y-6">
             <Tabs
                 value={selectedTagId || "all"}
-                onValueChange={handleTagChange}
+                onValueChange={(value) => setSelectedTagId(value === "all" ? null : value)}
             >
                 <TabsList>
                     <TabsTrigger value="all">All</TabsTrigger>

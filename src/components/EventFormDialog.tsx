@@ -19,7 +19,6 @@ import { Add01Icon, Edit02Icon, Cancel01Icon } from "@hugeicons/core-free-icons"
 import { type Event } from "@/lib/queries";
 import { createEvent, updateEvent, type ActionResult } from "@/app/(dashboard)/admin/events/actions";
 import { UploadButton } from "@/utils/uploadthing";
-import posthog from "posthog-js";
 
 interface EventFormDialogProps {
     event?: Event;
@@ -55,9 +54,6 @@ export function EventFormDialog({ event, trigger }: EventFormDialogProps) {
 
         startTransition(async () => {
             let result: ActionResult;
-            const eventTitle = formData.get('title') as string;
-            const eventLocation = formData.get('location') as string;
-
             if (isEditing) {
                 result = await updateEvent(event.id, formData);
             } else {
@@ -66,19 +62,7 @@ export function EventFormDialog({ event, trigger }: EventFormDialogProps) {
 
             if (result.success) {
                 setOpen(false);
-                if (isEditing) {
-                    // Capture admin event updated
-                    posthog.capture('admin_event_updated', {
-                        event_id: event.id,
-                        event_title: eventTitle,
-                        event_location: eventLocation,
-                    });
-                } else {
-                    // Capture admin event created
-                    posthog.capture('admin_event_created', {
-                        event_title: eventTitle,
-                        event_location: eventLocation,
-                    });
+                if (!isEditing) {
                     setImageUrl("");
                 }
             } else {

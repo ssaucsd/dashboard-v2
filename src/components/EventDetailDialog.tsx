@@ -11,7 +11,6 @@ import { MapPin, Clock } from "@hugeicons/core-free-icons";
 import Image from "next/image";
 import * as React from "react";
 import { RsvpButton } from "./RsvpButton";
-import posthog from "posthog-js";
 
 interface EventDetailDialogProps {
     event: EventWithRsvp;
@@ -30,20 +29,9 @@ export function EventDetailDialog({ event, children }: EventDetailDialogProps) {
         return `${dateStr}, ${startTimeStr} - ${endTimeStr}`;
     };
 
-    const handleOpenDialog = () => {
-        setOpen(true);
-        // Capture event detail viewed event
-        posthog.capture('event_detail_viewed', {
-            event_id: event.id,
-            event_title: event.title,
-            event_location: event.location,
-            event_start_time: event.start_time,
-        });
-    };
-
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <div onClick={handleOpenDialog} className="cursor-pointer">
+            <div onClick={() => setOpen(true)} className="cursor-pointer">
                 {children}
             </div>
             <DialogContent className="sm:max-w-3xl p-0 overflow-hidden">

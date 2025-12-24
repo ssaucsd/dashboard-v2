@@ -1,28 +1,14 @@
-'use client';
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Link01Icon, File01Icon, ArrowUpRight01Icon, PinIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Link from "next/link";
 import { type ResourceWithTags } from "@/lib/queries";
-import posthog from "posthog-js";
 
 interface ResourceGridProps {
     resources: ResourceWithTags[];
 }
 
 export function ResourceGrid({ resources }: ResourceGridProps) {
-    const handleResourceClick = (resource: ResourceWithTags) => {
-        // Capture resource clicked event
-        posthog.capture('resource_clicked', {
-            resource_id: resource.id,
-            resource_name: resource.name,
-            resource_link: resource.link,
-            is_pinned: resource.is_pinned,
-            tags: resource.tags?.map(t => t.name) || [],
-        });
-    };
-
     if (!resources || resources.length === 0) {
         return (
             <Card className="p-12 text-center">
@@ -49,7 +35,6 @@ export function ResourceGrid({ resources }: ResourceGridProps) {
                     href={resource.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => handleResourceClick(resource)}
                 >
                     <Card className="group h-full overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 cursor-pointer p-0">
                         {/* Gradient Header */}

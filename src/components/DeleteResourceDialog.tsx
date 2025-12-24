@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Delete02Icon, Alert02Icon } from "@hugeicons/core-free-icons";
 import { deleteResource } from "@/app/(dashboard)/admin/resources/actions";
-import posthog from "posthog-js";
 
 interface DeleteResourceDialogProps {
     resourceId: string;
@@ -35,11 +34,6 @@ export function DeleteResourceDialog({ resourceId, resourceName }: DeleteResourc
             const result = await deleteResource(resourceId);
             if (result.success) {
                 setOpen(false);
-                // Capture admin resource deleted
-                posthog.capture('admin_resource_deleted', {
-                    resource_id: resourceId,
-                    resource_name: resourceName,
-                });
             } else {
                 setError(result.error || 'Failed to delete resource');
             }
