@@ -4,8 +4,6 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { getUpcomingEventsWithRsvp } from "@/lib/queries";
 import { EventCard } from "@/components/EventCard";
 
-export const runtime = "edge";
-
 export default async function EventsPage() {
   const events = await getUpcomingEventsWithRsvp();
 

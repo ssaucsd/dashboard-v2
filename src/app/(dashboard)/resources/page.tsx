@@ -1,8 +1,6 @@
 import { getResourcesWithTags, getTags } from "@/lib/queries";
 import { ResourcesClient } from "./resources-client";
 
-export const runtime = "edge";
-
 export default async function ResourcesPage() {
   const [tags, resources] = await Promise.all([
     getTags(),

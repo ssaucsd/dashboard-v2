@@ -21,8 +21,6 @@ import {
   getPinnedResources,
 } from "@/lib/queries";
 
-export const runtime = "edge";
-
 export default async function Page() {
   const firstName = await getFirstName();
   const events = await getUpcomingEvents();

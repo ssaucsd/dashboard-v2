@@ -1,7 +1,5 @@
 import { UserInfoForm } from "@/components/UserInfoForm";
 
-export const runtime = "edge";
-
 export default function OnboardingPage() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4 bg-background">

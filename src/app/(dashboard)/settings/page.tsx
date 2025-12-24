@@ -9,8 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export const runtime = "edge";
-
 export default async function SettingsPage() {
   const profile = await getUserProfile();
 

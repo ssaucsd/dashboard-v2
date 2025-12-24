@@ -2,8 +2,6 @@ import AdminOnly from "@/components/AdminOnly";
 import { getResourcesWithTags, getTags } from "@/lib/queries";
 import { ResourcesAdminClient } from "./resources-admin-client";
 
-export const runtime = "edge";
-
 export default async function AdminResourcesPage() {
   const [resources, tags] = await Promise.all([
     getResourcesWithTags(),

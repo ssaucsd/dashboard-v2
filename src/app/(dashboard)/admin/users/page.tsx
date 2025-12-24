@@ -2,8 +2,6 @@ import AdminOnly from "@/components/AdminOnly";
 import { getAllProfiles } from "@/lib/queries";
 import { UsersAdminClient } from "./users-admin-client";
 
-export const runtime = "edge";
-
 export default async function AdminUsersPage() {
   const users = await getAllProfiles();
 
