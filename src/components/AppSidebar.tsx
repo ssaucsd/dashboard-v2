@@ -41,12 +41,12 @@ const adminActions = [
   {
     label: "Events",
     icon: Calendar,
-    href: "#"
+    href: "/admin/events"
   },
   {
     label: "Resources",
     icon: Book,
-    href: "#"
+    href: "/admin/resources"
   }
 ]
 

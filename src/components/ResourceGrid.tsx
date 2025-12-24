@@ -72,7 +72,7 @@ export function ResourceGrid({ resources }: ResourceGridProps) {
                         {/* Content */}
                         <CardContent className="p-5 space-y-3">
                             <div className="space-y-2">
-                                <h3 className="text-lg font-semibold leading-tight line-clamp-1 group-hover:text-primary transition-colors">
+                                <h3 className="text-lg font-serif leading-tight line-clamp-1 group-hover:text-primary transition-colors">
                                     {resource.name}
                                 </h3>
 

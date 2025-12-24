@@ -43,10 +43,10 @@ export default async function EventsPage() {
                         return (
                             <Card
                                 key={event.id}
-                                className="group overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1"
+                                className="group overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 p-0"
                             >
                                 {/* Event Image */}
-                                <div className="relative aspect-video overflow-hidden bg-linear-to-br from-primary/20 to-primary/5">
+                                <div className="relative aspect-[3/4] overflow-hidden bg-linear-to-br from-primary/20 to-primary/5">
                                     {event.image_url ? (
                                         <Image
                                             src={event.image_url}
@@ -83,7 +83,7 @@ export default async function EventsPage() {
                                 {/* Event Details */}
                                 <CardContent className="p-5 space-y-4">
                                     <div className="space-y-2">
-                                        <h3 className="text-xl font-serif font-semibold leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                                        <h3 className="text-xl font-serif leading-tight line-clamp-2 group-hover:text-primary transition-colors">
                                             {event.title}
                                         </h3>
 
