@@ -1,6 +1,6 @@
 "use client";
 
-import { type Event } from "@/lib/queries";
+import { type EventWithRsvp } from "@/lib/queries";
 import {
     Dialog,
     DialogContent,
@@ -10,9 +10,10 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { MapPin, Clock } from "@hugeicons/core-free-icons";
 import Image from "next/image";
 import * as React from "react";
+import { RsvpButton } from "./RsvpButton";
 
 interface EventDetailDialogProps {
-    event: Event;
+    event: EventWithRsvp;
     children: React.ReactNode;
 }
 
@@ -76,6 +77,11 @@ export function EventDetailDialog({ event, children }: EventDetailDialogProps) {
                                 <HugeiconsIcon icon={MapPin} className="h-5 w-5 shrink-0" />
                                 <span>{event.location}</span>
                             </div>
+
+                            <RsvpButton
+                                eventId={event.id}
+                                initialStatus={event.rsvp_status}
+                            />
                         </div>
 
                         {/* Description */}

@@ -11,7 +11,7 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar"
 import { ThemeToggle } from "@/components/ThemeToggle"
-import { Home, MusicNoteSquare02Icon, Calendar, Book, Settings01Icon, Logout01Icon } from "@hugeicons/core-free-icons"
+import { Home, MusicNoteSquare02Icon, Calendar, Book, Settings01Icon, Logout01Icon, User } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import { getIsAdmin, getUserProfile } from "@/lib/queries"
@@ -46,9 +46,9 @@ const userActions = [
 
 const adminActions = [
   {
-    label: "Admin",
-    icon: Home,
-    href: "/"
+    label: "Users",
+    icon: User,
+    href: "/admin/users"
   },
   {
     label: "Events",

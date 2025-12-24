@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
-import { getIsAdmin } from '@/lib/queries';
+import { getIsAdmin, getEventRsvps, type EventRsvp } from '@/lib/queries';
 
 export type ActionResult = {
     success: boolean;
@@ -102,5 +102,27 @@ export async function deleteEvent(id: string): Promise<ActionResult> {
     revalidatePath('/admin/events');
     revalidatePath('/events');
     revalidatePath('/');
+    revalidatePath('/');
     return { success: true };
+}
+
+export type RsvpResult = {
+    success: boolean;
+    data?: EventRsvp[] | null;
+    error?: string;
+};
+
+export async function getEventRsvpsAction(eventId: string): Promise<RsvpResult> {
+    const isAdmin = await getIsAdmin();
+    if (!isAdmin) {
+        return { success: false, error: 'Unauthorized' };
+    }
+
+    try {
+        const rsvps = await getEventRsvps(eventId);
+        return { success: true, data: rsvps };
+    } catch (error) {
+        console.error('Error fetching RSVPs:', error);
+        return { success: false, error: 'Failed to fetch RSVPs' };
+    }
 }

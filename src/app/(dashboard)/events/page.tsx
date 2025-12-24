@@ -1,11 +1,11 @@
 import { Card } from "@/components/ui/card";
 import { Calendar } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { getUpcomingEvents } from "@/lib/queries";
+import { getUpcomingEventsWithRsvp } from "@/lib/queries";
 import { EventCard } from "@/components/EventCard";
 
 export default async function EventsPage() {
-    const events = await getUpcomingEvents();
+    const events = await getUpcomingEventsWithRsvp();
 
     return (
         <div className="flex flex-col min-h-screen w-full p-4 md:p-6 lg:p-8 gap-8">

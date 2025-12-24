@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { type Event } from "@/lib/queries";
 import { EventFormDialog, EditEventButton } from "@/components/EventFormDialog";
 import { DeleteEventDialog } from "@/components/DeleteEventDialog";
+import { RsvpListDialog } from "@/components/RsvpListDialog";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Calendar, MapPin, Clock } from "@hugeicons/core-free-icons";
 import Image from "next/image";
@@ -88,6 +89,10 @@ export function EventsAdminClient({ events }: EventsAdminClientProps) {
 
                                     {/* Admin Actions */}
                                     <div className="absolute top-3 right-3 flex items-center gap-1 bg-background/95 backdrop-blur-sm rounded-lg p-1 shadow-md">
+                                        <RsvpListDialog
+                                            eventId={event.id}
+                                            eventTitle={event.title}
+                                        />
                                         <EditEventButton event={event} />
                                         <DeleteEventDialog
                                             eventId={event.id}

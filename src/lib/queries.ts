@@ -67,6 +67,40 @@ export const getUpcomingEvents = async (): Promise<Event[] | null> => {
     return events;
 }
 
+export type EventWithRsvp = Event & {
+    rsvp_status: "going" | "maybe" | "not_going" | null;
+    rsvp_count: number;
+};
+
+export const getUpcomingEventsWithRsvp = async (): Promise<EventWithRsvp[] | null> => {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    const now = new Date().toISOString();
+
+    const { data: events } = await supabase
+        .from('events')
+        .select(`
+            *,
+            rsvps (
+                user_id,
+                status
+            )
+        `)
+        .gte('start_time', now)
+        .order('start_time', { ascending: true });
+
+    if (!events) return null;
+
+    // Type casting here because Supabase complex join types can be tricky to infer automatically
+    const typedEvents = events as unknown as (Event & { rsvps: { user_id: string, status: "going" | "maybe" | "not_going" }[] })[];
+
+    return typedEvents.map((event) => ({
+        ...event,
+        rsvp_status: user ? event.rsvps.find((r) => r.user_id === user.id)?.status || null : null,
+        rsvp_count: event.rsvps.filter((r) => r.status === 'going').length
+    }));
+}
+
 export type Resource = Tables<'resources'>;
 export type Tag = Tables<'tags'>;
 export type ResourceWithTags = Resource & {
@@ -128,4 +162,46 @@ export const getResourcesWithTags = async (): Promise<ResourceWithTags[] | null>
         ...resource,
         tags: resource.resource_tags?.map((rt: { tags: Tag | null }) => rt.tags).filter(Boolean) as Tag[] || []
     })) || null;
+}
+
+export type Profile = Tables<'profiles'>;
+
+export type EventRsvp = {
+    user_id: string;
+    status: "going" | "maybe" | "not_going";
+    created_at: string;
+    profile: Profile | null;
+};
+
+export const getEventRsvps = async (eventId: string): Promise<EventRsvp[] | null> => {
+    const supabase = await createClient();
+    
+    const { data: rsvps } = await supabase
+        .from('rsvps')
+        .select(`
+            user_id,
+            status,
+            created_at,
+            profile:profiles(*)
+        `)
+        .eq('event_id', eventId)
+        .order('created_at', { ascending: false });
+
+    if (!rsvps) return null;
+
+    // Type casting to handle the joined profile data correctly
+    return rsvps as unknown as EventRsvp[];
+}
+
+/**
+ * Get all profiles for admin management
+ */
+export const getAllProfiles = async (): Promise<Profile[] | null> => {
+    const supabase = await createClient();
+    const { data: profiles } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('first_name', { ascending: true })
+        .order('last_name', { ascending: true });
+    return profiles;
 }

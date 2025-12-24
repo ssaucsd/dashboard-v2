@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,6 +24,11 @@ type Profile = {
 export function ProfileSettingsForm({ profile }: { profile: Profile }) {
     const [state, action, isPending] = useActionState(updateProfile, initialState);
 
+    // Use controlled inputs to avoid Base UI uncontrolled/controlled warning
+    const [preferredName, setPreferredName] = useState(profile.preferred_name || "");
+    const [major, setMajor] = useState(profile.major || "");
+    const [graduationYear, setGraduationYear] = useState(profile.graduation_year?.toString() || "");
+
     useEffect(() => {
         if (state.success) {
             toast.success(state.success);
@@ -37,12 +42,13 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
         <form action={action} className="space-y-6">
 
             <Field>
-                <FieldLabel htmlFor="preferred_name">Preferred Name</FieldLabel>
+                <FieldLabel htmlFor="preferred_name">Preferred First Name</FieldLabel>
                 <Input
                     id="preferred_name"
                     name="preferred_name"
-                    defaultValue={profile.preferred_name || ""}
-                    placeholder="e.g. Luddy Beethoven"
+                    value={preferredName}
+                    onChange={(e) => setPreferredName(e.target.value)}
+                    placeholder="e.g. Homer"
                     required
                 />
                 {state.errors?.preferred_name && (
@@ -55,7 +61,8 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
                 <Input
                     id="major"
                     name="major"
-                    defaultValue={profile.major || ""}
+                    value={major}
+                    onChange={(e) => setMajor(e.target.value)}
                     placeholder="e.g. Computer Science"
                     required
                 />
@@ -72,7 +79,8 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
                     type="number"
                     min="2000"
                     max="2100"
-                    defaultValue={profile.graduation_year || ""}
+                    value={graduationYear}
+                    onChange={(e) => setGraduationYear(e.target.value)}
                     placeholder="e.g. 2026"
                     required
                 />
@@ -87,3 +95,4 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
         </form>
     );
 }
+

@@ -32,11 +32,11 @@ export function UserInfoForm() {
             )}
 
             <Field>
-                <FieldLabel htmlFor="preferred_name">Preferred Name</FieldLabel>
+                <FieldLabel htmlFor="preferred_name">Preferred First Name</FieldLabel>
                 <Input
                     id="preferred_name"
                     name="preferred_name"
-                    placeholder="e.g. Luddy Beethoven"
+                    placeholder="e.g. Homer"
                     required
                 />
                 {state.errors?.preferred_name && (
