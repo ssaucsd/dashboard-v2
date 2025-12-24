@@ -2,6 +2,8 @@ import AdminOnly from "@/components/AdminOnly";
 import { getEvents } from "@/lib/queries";
 import { EventsAdminClient } from "./events-admin-client";
 
+export const runtime = "edge";
+
 export default async function AdminEventsPage() {
   const events = await getEvents();
 

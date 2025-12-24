@@ -2,6 +2,8 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { DynamicBreadcrumb } from "@/components/DynamicBreadcrumb";
 
+export const runtime = "edge";
+
 export default async function DashboardLayout({
   children,
 }: {
