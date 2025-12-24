@@ -46,17 +46,17 @@ const userActions = [
 
 const adminActions = [
   {
-    label: "Users",
+    label: "Edit Users",
     icon: User,
     href: "/admin/users"
   },
   {
-    label: "Events",
+    label: "Edit Events",
     icon: Calendar,
     href: "/admin/events"
   },
   {
-    label: "Resources",
+    label: "Edit Resources",
     icon: Book,
     href: "/admin/resources"
   }
