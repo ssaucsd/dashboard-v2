@@ -18,6 +18,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Edit02Icon } from "@hugeicons/core-free-icons";
 import { type Profile } from "@/lib/queries";
 import { updateUserProfile, type ActionResult } from "@/app/(dashboard)/admin/users/actions";
+import posthog from "posthog-js";
 
 interface UserFormDialogProps {
     user: Profile;
@@ -42,6 +43,12 @@ export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
 
             if (result.success) {
                 setOpen(false);
+                // Capture admin user updated
+                posthog.capture('admin_user_updated', {
+                    target_user_id: user.id,
+                    target_user_email: user.email,
+                    new_role: role,
+                });
             } else {
                 setError(result.error || 'An error occurred');
             }

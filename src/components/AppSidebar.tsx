@@ -11,7 +11,8 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar"
 import { ThemeToggle } from "@/components/ThemeToggle"
-import { Home, MusicNoteSquare02Icon, Calendar, Book, Settings01Icon, Logout01Icon, User } from "@hugeicons/core-free-icons"
+import { LogoutButton } from "@/components/LogoutButton"
+import { Home, MusicNoteSquare02Icon, Calendar, Book, Settings01Icon, User } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import Link from "next/link"
 import { getIsAdmin, getUserProfile } from "@/lib/queries"
@@ -164,19 +165,7 @@ export async function AppSidebar() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <form action={async () => {
-                  'use server';
-                  const { createClient } = await import("@/lib/supabase/server");
-                  const supabase = await createClient();
-                  await supabase.auth.signOut();
-                  const { redirect } = await import("next/navigation");
-                  redirect('/login');
-                }} className="w-full">
-                  <button className="flex w-full items-center gap-2 cursor-pointer text-destructive focus:text-destructive">
-                    <HugeiconsIcon icon={Logout01Icon} className="size-4" />
-                    Log out
-                  </button>
-                </form>
+                <LogoutButton />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

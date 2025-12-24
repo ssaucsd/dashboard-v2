@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Delete02Icon, Alert02Icon } from "@hugeicons/core-free-icons";
 import { deleteUserProfile } from "@/app/(dashboard)/admin/users/actions";
+import posthog from "posthog-js";
 
 interface DeleteUserDialogProps {
     userId: string;
@@ -35,6 +36,12 @@ export function DeleteUserDialog({ userId, userName, userEmail }: DeleteUserDial
             const result = await deleteUserProfile(userId);
             if (result.success) {
                 setOpen(false);
+                // Capture admin user deleted
+                posthog.capture('admin_user_deleted', {
+                    target_user_id: userId,
+                    target_user_name: userName,
+                    target_user_email: userEmail,
+                });
             } else {
                 setError(result.error || 'Failed to delete user');
             }

@@ -18,6 +18,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, Edit02Icon } from "@hugeicons/core-free-icons";
 import { type ResourceWithTags, type Tag } from "@/lib/queries";
 import { createResource, updateResource, type ActionResult } from "@/app/(dashboard)/admin/resources/actions";
+import posthog from "posthog-js";
 
 interface ResourceFormDialogProps {
     resource?: ResourceWithTags;
@@ -42,6 +43,9 @@ export function ResourceFormDialog({ resource, trigger, availableTags = [] }: Re
 
         startTransition(async () => {
             let result: ActionResult;
+            const resourceName = formData.get('name') as string;
+            const resourceLink = formData.get('link') as string;
+
             if (isEditing) {
                 result = await updateResource(resource.id, formData);
             } else {
@@ -50,6 +54,20 @@ export function ResourceFormDialog({ resource, trigger, availableTags = [] }: Re
 
             if (result.success) {
                 setOpen(false);
+                if (isEditing) {
+                    // Capture admin resource updated
+                    posthog.capture('admin_resource_updated', {
+                        resource_id: resource.id,
+                        resource_name: resourceName,
+                        resource_link: resourceLink,
+                    });
+                } else {
+                    // Capture admin resource created
+                    posthog.capture('admin_resource_created', {
+                        resource_name: resourceName,
+                        resource_link: resourceLink,
+                    });
+                }
             } else {
                 setError(result.error || 'An error occurred');
             }

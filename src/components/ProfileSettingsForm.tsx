@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,6 +11,7 @@ import {
 import { updateProfile, type ActionState } from "@/app/(dashboard)/settings/actions";
 import { toast } from "sonner";
 import { useEffect } from "react";
+import posthog from "posthog-js";
 
 const initialState: ActionState = {};
 
@@ -23,6 +24,7 @@ type Profile = {
 
 export function ProfileSettingsForm({ profile }: { profile: Profile }) {
     const [state, action, isPending] = useActionState(updateProfile, initialState);
+    const hasTrackedSuccess = useRef(false);
 
     // Use controlled inputs to avoid Base UI uncontrolled/controlled warning
     const [preferredName, setPreferredName] = useState(profile.preferred_name || "");
@@ -32,11 +34,25 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
     useEffect(() => {
         if (state.success) {
             toast.success(state.success);
+            // Capture profile updated event only once per success
+            if (!hasTrackedSuccess.current) {
+                posthog.capture('profile_updated', {
+                    fields_updated: ['preferred_name', 'major', 'graduation_year'],
+                });
+                hasTrackedSuccess.current = true;
+            }
         }
         if (state.error) {
             toast.error(state.error);
+            hasTrackedSuccess.current = false;
         }
     }, [state]);
+
+    // Reset tracking when form values change
+    const handleInputChange = (setter: (value: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        setter(e.target.value);
+        hasTrackedSuccess.current = false;
+    };
 
     return (
         <form action={action} className="space-y-6">
@@ -47,7 +63,7 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
                     id="preferred_name"
                     name="preferred_name"
                     value={preferredName}
-                    onChange={(e) => setPreferredName(e.target.value)}
+                    onChange={handleInputChange(setPreferredName)}
                     placeholder="e.g. Homer"
                     required
                 />
@@ -62,7 +78,7 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
                     id="major"
                     name="major"
                     value={major}
-                    onChange={(e) => setMajor(e.target.value)}
+                    onChange={handleInputChange(setMajor)}
                     placeholder="e.g. Computer Science"
                     required
                 />
@@ -80,7 +96,7 @@ export function ProfileSettingsForm({ profile }: { profile: Profile }) {
                     min="2000"
                     max="2100"
                     value={graduationYear}
-                    onChange={(e) => setGraduationYear(e.target.value)}
+                    onChange={handleInputChange(setGraduationYear)}
                     placeholder="e.g. 2026"
                     required
                 />

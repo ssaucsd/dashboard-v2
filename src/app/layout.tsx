@@ -33,7 +33,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script src="https://accounts.google.com/gsi/client" async></script>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body

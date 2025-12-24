@@ -6,6 +6,7 @@ import { rsvpToEvent, removeRsvp } from "@/app/actions/rsvp";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import posthog from "posthog-js";
 
 interface RsvpButtonProps {
     eventId: string;
@@ -26,15 +27,26 @@ export function RsvpButton({ eventId, initialStatus, className, onRsvpChange }: 
                     setStatus(null);
                     onRsvpChange?.(null);
                     toast.success("RSVP removed");
+                    // Capture RSVP cancelled event
+                    posthog.capture('event_rsvp_cancelled', {
+                        event_id: eventId,
+                    });
                 } else {
                     await rsvpToEvent(eventId, "going");
                     setStatus("going");
                     onRsvpChange?.("going");
                     toast.success("RSVP'd successfully!");
+                    // Capture RSVP submitted event
+                    posthog.capture('event_rsvp_submitted', {
+                        event_id: eventId,
+                        status: 'going',
+                    });
                 }
             } catch (error) {
                 toast.error("Failed to update RSVP");
                 console.error(error);
+                // Capture RSVP error
+                posthog.captureException(error);
             }
         });
     };
