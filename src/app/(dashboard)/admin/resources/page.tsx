@@ -1,9 +1,13 @@
 import AdminOnly from "@/components/AdminOnly";
-import { getResources } from "@/lib/queries";
+import { getResourcesWithTags, getTags } from "@/lib/queries";
 import { ResourcesAdminClient } from "./resources-admin-client";
 
 export default async function AdminResourcesPage() {
-    const resources = await getResources();
+    const [resources, tags] = await Promise.all([
+        getResourcesWithTags(),
+        getTags()
+    ]);
+
 
     return (
         <AdminOnly>
@@ -15,7 +19,7 @@ export default async function AdminResourcesPage() {
                     </p>
                 </div>
 
-                <ResourcesAdminClient resources={resources || []} />
+                <ResourcesAdminClient resources={resources || []} tags={tags || []} />
             </div>
         </AdminOnly>
     );

@@ -19,21 +19,35 @@ export async function createResource(formData: FormData): Promise<ActionResult> 
     const link = formData.get('link') as string;
     const description = formData.get('description') as string | null;
     const isPinned = formData.get('is_pinned') === 'on';
+    const tagIdsString = formData.get('tagIds') as string | null;
+    const tagIds = tagIdsString ? tagIdsString.split(',').filter(Boolean) : [];
 
     if (!name || !link) {
         return { success: false, error: 'Name and link are required' };
     }
 
     const supabase = await createClient();
-    const { error } = await supabase.from('resources').insert({
+    const { data: resource, error } = await supabase.from('resources').insert({
         name,
         link,
         description: description || null,
         is_pinned: isPinned,
-    });
+    }).select('id').single();
 
-    if (error) {
-        return { success: false, error: error.message };
+    if (error || !resource) {
+        return { success: false, error: error?.message || 'Failed to create resource' };
+    }
+
+    // Insert tag associations
+    if (tagIds.length > 0) {
+        const tagEntries = tagIds.map(tagId => ({
+            resource_id: resource.id,
+            tag_id: tagId,
+        }));
+        const { error: tagError } = await supabase.from('resource_tags').insert(tagEntries);
+        if (tagError) {
+            console.error('Failed to insert tags:', tagError);
+        }
     }
 
     revalidatePath('/admin/resources');
@@ -52,6 +66,8 @@ export async function updateResource(id: string, formData: FormData): Promise<Ac
     const link = formData.get('link') as string;
     const description = formData.get('description') as string | null;
     const isPinned = formData.get('is_pinned') === 'on';
+    const tagIdsString = formData.get('tagIds') as string | null;
+    const tagIds = tagIdsString ? tagIdsString.split(',').filter(Boolean) : [];
 
     if (!name || !link) {
         return { success: false, error: 'Name and link are required' };
@@ -70,6 +86,27 @@ export async function updateResource(id: string, formData: FormData): Promise<Ac
 
     if (error) {
         return { success: false, error: error.message };
+    }
+
+    // Update tag associations: delete existing, insert new
+    const { error: deleteError } = await supabase
+        .from('resource_tags')
+        .delete()
+        .eq('resource_id', id);
+
+    if (deleteError) {
+        console.error('Failed to delete existing tags:', deleteError);
+    }
+
+    if (tagIds.length > 0) {
+        const tagEntries = tagIds.map(tagId => ({
+            resource_id: id,
+            tag_id: tagId,
+        }));
+        const { error: tagError } = await supabase.from('resource_tags').insert(tagEntries);
+        if (tagError) {
+            console.error('Failed to insert tags:', tagError);
+        }
     }
 
     revalidatePath('/admin/resources');

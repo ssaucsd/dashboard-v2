@@ -16,19 +16,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Add01Icon, Edit02Icon } from "@hugeicons/core-free-icons";
-import { type Resource } from "@/lib/queries";
+import { type ResourceWithTags, type Tag } from "@/lib/queries";
 import { createResource, updateResource, type ActionResult } from "@/app/(dashboard)/admin/resources/actions";
 
 interface ResourceFormDialogProps {
-    resource?: Resource;
+    resource?: ResourceWithTags;
     trigger?: React.ReactElement;
+    availableTags?: Tag[];
 }
 
-export function ResourceFormDialog({ resource, trigger }: ResourceFormDialogProps) {
+export function ResourceFormDialog({ resource, trigger, availableTags = [] }: ResourceFormDialogProps) {
     const isEditing = !!resource;
     const [open, setOpen] = useState(false);
     const [isPending, startTransition] = useTransition();
     const [error, setError] = useState<string | null>(null);
+    const [selectedTagIds, setSelectedTagIds] = useState<string[]>(
+        resource?.tags?.map(t => t.id) || []
+    );
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -111,6 +115,44 @@ export function ResourceFormDialog({ resource, trigger }: ResourceFormDialogProp
                         <FieldDescription>Optional description</FieldDescription>
                     </Field>
 
+                    {/* Tags Selection */}
+                    {availableTags.length > 0 && (
+                        <Field>
+                            <FieldLabel>Tags</FieldLabel>
+                            <div className="flex flex-wrap gap-2 mt-1">
+                                {availableTags.map((tag) => {
+                                    const isSelected = selectedTagIds.includes(tag.id);
+                                    return (
+                                        <button
+                                            key={tag.id}
+                                            type="button"
+                                            onClick={() => {
+                                                setSelectedTagIds(prev =>
+                                                    isSelected
+                                                        ? prev.filter(id => id !== tag.id)
+                                                        : [...prev, tag.id]
+                                                );
+                                            }}
+                                            className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium transition-colors ${isSelected
+                                                    ? 'bg-primary text-primary-foreground'
+                                                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                                }`}
+                                        >
+                                            {tag.name}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            <FieldDescription>Select tags to categorize this resource</FieldDescription>
+                            {/* Hidden input to send selected tag IDs */}
+                            <input
+                                type="hidden"
+                                name="tagIds"
+                                value={selectedTagIds.join(',')}
+                            />
+                        </Field>
+                    )}
+
                     <Field orientation="horizontal">
                         <input
                             type="checkbox"
@@ -141,10 +183,11 @@ export function ResourceFormDialog({ resource, trigger }: ResourceFormDialogProp
     );
 }
 
-export function EditResourceButton({ resource }: { resource: Resource }) {
+export function EditResourceButton({ resource, availableTags }: { resource: ResourceWithTags; availableTags?: Tag[] }) {
     return (
         <ResourceFormDialog
             resource={resource}
+            availableTags={availableTags}
             trigger={
                 <Button variant="ghost" size="icon-sm">
                     <HugeiconsIcon icon={Edit02Icon} className="h-4 w-4" />
