@@ -79,7 +79,7 @@ export function EventDetailDialog({ event, children }: EventDetailDialogProps) {
           </div>
 
           {/* Info Section */}
-          <div className="w-full md:w-1/2 p-6 flex flex-col gap-4">
+          <div className="w-full md:w-1/2 p-6 pt-10 flex flex-col gap-4">
             <DialogTitle className="text-2xl font-serif">
               {event.title}
             </DialogTitle>

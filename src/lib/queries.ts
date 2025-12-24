@@ -147,6 +147,39 @@ export const getPinnedResources = async (): Promise<Resource[] | null> => {
 };
 
 /**
+ * Get pinned resources with their tags
+ */
+export const getPinnedResourcesWithTags = async (): Promise<
+  ResourceWithTags[] | null
+> => {
+  const supabase = await createClient();
+
+  const { data: resources } = await supabase
+    .from("resources")
+    .select(
+      `
+            *,
+            resource_tags(
+                tags(*)
+            )
+        `,
+    )
+    .eq("is_pinned", true)
+    .order("name", { ascending: true });
+
+  // Transform nested structure to flat array of tags
+  return (
+    resources?.map((resource) => ({
+      ...resource,
+      tags:
+        (resource.resource_tags
+          ?.map((rt: { tags: Tag | null }) => rt.tags)
+          .filter(Boolean) as Tag[]) || [],
+    })) || null
+  );
+};
+
+/**
  * Get all tags ordered by display_order
  */
 export const getTags = async (): Promise<Tag[] | null> => {
@@ -236,4 +269,47 @@ export const getAllProfiles = async (): Promise<Profile[] | null> => {
     .order("first_name", { ascending: true })
     .order("last_name", { ascending: true });
   return profiles;
+};
+
+/**
+ * Get events the current user has RSVP'd to (going or maybe)
+ */
+export const getUserRsvpEvents = async (): Promise<EventWithRsvp[] | null> => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return null;
+
+  const { data: rsvps } = await supabase
+    .from("rsvps")
+    .select(
+      `
+      status,
+      event:events(*)
+    `,
+    )
+    .eq("user_id", user.id)
+    .in("status", ["going", "maybe"]);
+
+  if (!rsvps) return null;
+
+  // Type casting for the joined event data
+  const typedRsvps = rsvps as unknown as {
+    status: "going" | "maybe" | "not_going";
+    event: Event;
+  }[];
+
+  return typedRsvps
+    .filter((rsvp) => rsvp.event !== null)
+    .map((rsvp) => ({
+      ...rsvp.event,
+      rsvp_status: rsvp.status,
+      rsvp_count: 0, // We don't need the count for this view
+    }))
+    .sort(
+      (a, b) =>
+        new Date(a.start_time).getTime() - new Date(b.start_time).getTime(),
+    );
 };
