@@ -301,8 +301,11 @@ export const getUserRsvpEvents = async (): Promise<EventWithRsvp[] | null> => {
     event: Event;
   }[];
 
+  const now = new Date();
+
   return typedRsvps
     .filter((rsvp) => rsvp.event !== null)
+    .filter((rsvp) => new Date(rsvp.event.end_time) >= now)
     .map((rsvp) => ({
       ...rsvp.event,
       rsvp_status: rsvp.status,
